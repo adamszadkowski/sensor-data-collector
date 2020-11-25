@@ -1,7 +1,11 @@
-plugins {
-    kotlin("jvm") version "1.4.20"
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-    application
+plugins {
+    val kotlinVersion = "1.4.20"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+
+    id("org.springframework.boot") version "2.4.0"
 }
 
 repositories {
@@ -11,17 +15,20 @@ repositories {
 dependencies {
     implementation(platform(kotlin("bom")))
     implementation(platform("org.junit:junit-bom:5.7.0"))
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.4.0"))
     implementation(kotlin("stdlib"))
+    implementation("org.springframework.boot:spring-boot-starter-web")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
-application {
-    mainClassName = "info.szadkowski.sensor.data.collector.AppKt"
-}
-
 tasks {
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "14"
+    }
     withType<Test> {
         useJUnitPlatform()
     }
