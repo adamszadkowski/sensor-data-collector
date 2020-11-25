@@ -16,6 +16,9 @@ dependencies {
     implementation(platform(kotlin("bom")))
     implementation(platform("org.junit:junit-bom:5.7.0"))
     implementation(platform("org.springframework.boot:spring-boot-dependencies:2.4.0"))
+}
+
+dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.springframework.boot:spring-boot-starter-web")
 
