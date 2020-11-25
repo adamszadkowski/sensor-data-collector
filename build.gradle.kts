@@ -10,12 +10,19 @@ repositories {
 
 dependencies {
     implementation(platform(kotlin("bom")))
+    implementation(platform("org.junit:junit-bom:5.7.0"))
     implementation(kotlin("stdlib"))
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 application {
     mainClassName = "info.szadkowski.sensor.data.collector.AppKt"
+}
+
+tasks {
+    withType<Test> {
+        useJUnitPlatform()
+    }
 }

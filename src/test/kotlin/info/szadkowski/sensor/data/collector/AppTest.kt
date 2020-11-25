@@ -3,8 +3,8 @@
  */
 package info.szadkowski.sensor.data.collector
 
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 
 class AppTest {
     @Test fun testAppHasAGreeting() {
