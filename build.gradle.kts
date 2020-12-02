@@ -6,6 +6,8 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion
 
     id("org.springframework.boot") version "2.4.0"
+
+    id("nebula.integtest") version "7.0.9"
 }
 
 repositories {
