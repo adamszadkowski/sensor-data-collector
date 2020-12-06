@@ -7,6 +7,6 @@ class InfluxdbMeasurementRepository(
     private val influxdbClient: InfluxdbClient
 ) : MeasurementRepository {
     override fun write(measurement: Measurement) {
-        influxdbClient.write("""temperature=${measurement.temperature}""").execute()
+        influxdbClient.write("""location=${measurement.location} temperature=${measurement.temperature}""").execute()
     }
 }

@@ -39,7 +39,7 @@ class MeasurementEndpointTest(
         // given
         wireMockServer.stubFor(
             post("/write")
-                .withRequestBody(equalTo("temperature=21.3"))
+                .withRequestBody(equalTo("location=livingroom temperature=21.3"))
                 .willReturn(
                     aResponse()
                         .withStatus(204)
