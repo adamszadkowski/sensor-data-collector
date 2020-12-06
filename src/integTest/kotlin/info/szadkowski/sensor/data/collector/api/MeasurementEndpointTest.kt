@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.post
 @SpringBootTest
 @ContextConfiguration(initializers = [WireMockInitializer::class])
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class MeasurementEndpointTest(
     @Autowired val wireMockServer: WireMockServer,
     @Autowired val mockMvc: MockMvc
@@ -39,7 +41,7 @@ class MeasurementEndpointTest(
         // given
         wireMockServer.stubFor(
             post("/write")
-                .withRequestBody(equalTo("location=livingroom temperature=21.3"))
+                .withRequestBody(equalTo("location=location1 temperature=21.3"))
                 .willReturn(
                     aResponse()
                         .withStatus(204)
@@ -50,6 +52,7 @@ class MeasurementEndpointTest(
         mockMvc.post("/measurement") {
             accept = MediaType("application", "vnd.sensor.collector.v1+json")
             contentType = MediaType.APPLICATION_JSON
+            header("X-API-KEY", "abc")
             content = """{"temperature": 21.3}"""
         }.andExpect {
             status { is2xxSuccessful() }
