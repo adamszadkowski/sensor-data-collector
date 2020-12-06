@@ -1,5 +1,6 @@
 package info.szadkowski.sensor.data.collector.infrastructure.influxdb
 
+import info.szadkowski.sensor.data.collector.domain.MeasurementRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,4 +15,8 @@ class InfluxdbConfiguration {
             .baseUrl(url)
             .build()
             .create(InfluxdbClient::class.java)
+
+    @Bean
+    fun measurementRepository(influxdbClient: InfluxdbClient): MeasurementRepository =
+        InfluxdbMeasurementRepository(influxdbClient)
 }

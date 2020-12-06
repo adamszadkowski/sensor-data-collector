@@ -1,6 +1,6 @@
 package info.szadkowski.sensor.data.collector.api
 
-import info.szadkowski.sensor.data.collector.infrastructure.influxdb.InfluxdbClient
+import info.szadkowski.sensor.data.collector.domain.MeasurementRepository
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/measurement")
 class MeasurementEndpoint(
-    val influxdbClient: InfluxdbClient
+    private val measurementRepository: MeasurementRepository
 ) {
 
     @PostMapping(produces = ["application/vnd.sensor.collector.v1+json"])
     fun writeMeasurement() {
-        influxdbClient.write().execute()
+        measurementRepository.write()
     }
 }
