@@ -19,6 +19,7 @@ dependencies {
     implementation(platform("org.junit:junit-bom:5.7.0"))
     implementation(platform("org.springframework.boot:spring-boot-dependencies:2.4.0"))
     api("com.github.tomakehurst:wiremock:2.27.2")
+    api("io.strikt:strikt-core:0.22.1")
 }
 
 dependencies {
@@ -28,6 +29,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.tomakehurst:wiremock")
+    testImplementation("io.strikt:strikt-core")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
