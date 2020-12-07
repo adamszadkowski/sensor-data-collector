@@ -1,3 +1,7 @@
 sensors:
   - apiKey: abc
     location: location1
+
+influxdb:
+  measurements:
+    temperature: temp

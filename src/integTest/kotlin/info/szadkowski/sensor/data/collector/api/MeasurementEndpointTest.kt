@@ -61,7 +61,7 @@ class MeasurementEndpointTest(
         wireMockServer.verify(
             1,
             postRequestedFor(urlPathEqualTo("/write"))
-                .withRequestBody(equalTo("location=location1 temperature=21.3,humidity=55.3"))
+                .withRequestBody(equalTo("temp,location=location1 temperature=21.3,humidity=55.3"))
         )
     }
 }

@@ -5,12 +5,14 @@ import info.szadkowski.sensor.data.collector.domain.model.TaggedMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
 
 class InfluxdbMeasurementRepository(
-    private val influxdbClient: InfluxdbClient
+    private val influxdbClient: InfluxdbClient,
+    private val properties: InfluxdbProperties
 ) : MeasurementRepository {
     override fun write(measurement: TaggedMeasurement) {
         when (measurement.measurement) {
             is TemperatureMeasurement -> {
-                influxdbClient.write("location=${measurement.location} ${measurement.measurement.format()}").execute()
+                influxdbClient.write("${properties.measurements.temperature},location=${measurement.location} ${measurement.measurement.format()}")
+                    .execute()
             }
         }
     }
