@@ -49,7 +49,7 @@ class MeasurementEndpointTest(
         )
 
         // when
-        mockMvc.post("/measurement") {
+        mockMvc.post("/measurement/temperature") {
             accept = MediaType("application", "vnd.sensor.collector.v1+json")
             contentType = MediaType.APPLICATION_JSON
             header("X-API-KEY", "abc")
