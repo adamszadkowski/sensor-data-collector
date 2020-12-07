@@ -10,9 +10,10 @@ class InfluxdbMeasurementRepository(
     override fun write(measurement: TaggedMeasurement) {
         when (measurement.measurement) {
             is TemperatureMeasurement -> {
-                influxdbClient.write("""location=${measurement.location} temperature=${measurement.measurement.temperature},humidity=${measurement.measurement.humidity}""")
-                    .execute()
+                influxdbClient.write("location=${measurement.location} ${measurement.measurement.format()}").execute()
             }
         }
     }
+
+    private fun TemperatureMeasurement.format() = "temperature=$temperature,humidity=$humidity"
 }
