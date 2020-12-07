@@ -25,6 +25,7 @@ class MeasurementEndpoint(
     }
 
     private fun TemperatureMeasurementDto.toDomain() = TemperatureMeasurement(
-        temperature = temperature
+        temperature = temperature,
+        humidity = humidity
     )
 }

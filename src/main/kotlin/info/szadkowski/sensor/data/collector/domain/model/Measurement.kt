@@ -3,5 +3,6 @@ package info.szadkowski.sensor.data.collector.domain.model
 sealed class Measurement
 
 data class TemperatureMeasurement(
-    val temperature: Double
+    val temperature: Double,
+    val humidity: Double
 ) : Measurement()
