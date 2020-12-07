@@ -41,7 +41,6 @@ class MeasurementEndpointTest(
         // given
         wireMockServer.stubFor(
             post("/write")
-                .withRequestBody(equalTo("location=location1 temperature=21.3"))
                 .willReturn(
                     aResponse()
                         .withStatus(204)
@@ -59,6 +58,10 @@ class MeasurementEndpointTest(
         }
 
         // then
-        wireMockServer.verify(1, postRequestedFor(urlPathEqualTo("/write")))
+        wireMockServer.verify(
+            1,
+            postRequestedFor(urlPathEqualTo("/write"))
+                .withRequestBody(equalTo("location=location1 temperature=21.3"))
+        )
     }
 }
