@@ -2,7 +2,7 @@ package info.szadkowski.sensor.data.collector.api
 
 import info.szadkowski.sensor.data.collector.api.model.TemperatureMeasurementDto
 import info.szadkowski.sensor.data.collector.domain.MeasurementService
-import info.szadkowski.sensor.data.collector.domain.model.Measurement
+import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
@@ -24,7 +24,7 @@ class MeasurementEndpoint(
         measurementService.write(apiKey, measurement.toDomain())
     }
 
-    private fun TemperatureMeasurementDto.toDomain() = Measurement(
+    private fun TemperatureMeasurementDto.toDomain() = TemperatureMeasurement(
         temperature = temperature
     )
 }

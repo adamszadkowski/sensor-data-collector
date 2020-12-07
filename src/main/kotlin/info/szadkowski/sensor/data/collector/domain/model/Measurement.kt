@@ -1,5 +1,7 @@
 package info.szadkowski.sensor.data.collector.domain.model
 
-data class Measurement(
+sealed class Measurement
+
+data class TemperatureMeasurement(
     val temperature: Double
-)
+) : Measurement()

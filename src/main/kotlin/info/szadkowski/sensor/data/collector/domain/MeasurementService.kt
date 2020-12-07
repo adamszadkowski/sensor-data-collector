@@ -11,7 +11,7 @@ class MeasurementService(
     fun write(apiKey: String, measurement: Measurement) {
         val sensor = sensorRepository.fetch(apiKey)
         val taggedMeasurement = TaggedMeasurement(
-            temperature = measurement.temperature,
+            measurement = measurement,
             location = sensor.location
         )
         measurementRepository.write(taggedMeasurement)
