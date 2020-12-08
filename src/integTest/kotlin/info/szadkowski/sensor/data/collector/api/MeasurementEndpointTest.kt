@@ -40,7 +40,7 @@ class MeasurementEndpointTest(
     fun `Writes temperature measurement to InfluxDB`() {
         // given
         wireMockServer.stubFor(
-            post("/write")
+            post(urlMatching("/write(.*)"))
                 .willReturn(
                     aResponse()
                         .withStatus(204)
@@ -61,6 +61,7 @@ class MeasurementEndpointTest(
         wireMockServer.verify(
             1,
             postRequestedFor(urlPathEqualTo("/write"))
+                .withQueryParam("precision", equalTo("s"))
                 .withRequestBody(equalTo("temp,location=location1 temperature=21.3,humidity=55.3 1607462665"))
         )
     }

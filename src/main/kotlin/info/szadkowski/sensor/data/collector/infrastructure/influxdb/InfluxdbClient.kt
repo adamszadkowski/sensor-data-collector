@@ -6,6 +6,6 @@ import retrofit2.http.POST
 
 interface InfluxdbClient {
 
-    @POST("/write")
+    @POST("/write?precision=s")
     fun write(@Body content: String): Call<Unit>
 }
