@@ -1,7 +1,7 @@
 package info.szadkowski.sensor.data.collector.domain
 
-import info.szadkowski.sensor.data.collector.domain.model.TaggedMeasurement
+import info.szadkowski.sensor.data.collector.domain.model.TaggedTemperatureMeasurement
 
 interface MeasurementRepository {
-    fun write(measurement: TaggedMeasurement)
+    fun write(measurement: TaggedTemperatureMeasurement)
 }
