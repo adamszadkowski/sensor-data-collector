@@ -6,9 +6,10 @@ import info.szadkowski.sensor.data.collector.domain.model.Sensor
 class PropertySensorRepository(
     sensorProperties: SensorProperties
 ) : SensorRepository {
-    private val sensorsByKey = sensorProperties.sensors.groupBy { it.apiKey }.mapValues { (_, v) -> v[0] }
+    private val sensorsByKey = sensorProperties.sensors
+        .groupBy { it.apiKey }
+        .mapValues { (_, v) -> v[0] }
+        .mapValues { (_, v) -> Sensor(v.location) }
 
-    override fun fetch(apiKey: String): Sensor {
-        return Sensor(sensorsByKey[apiKey]!!.location)
-    }
+    override fun fetch(apiKey: String): Sensor = sensorsByKey[apiKey]!!
 }
