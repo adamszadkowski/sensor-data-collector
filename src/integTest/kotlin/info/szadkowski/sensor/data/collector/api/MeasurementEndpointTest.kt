@@ -4,9 +4,13 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import info.szadkowski.sensor.data.collector.wiremock.WireMockInitializer
+import org.influxdb.InfluxDB
+import org.influxdb.dto.Query
+import org.influxdb.dto.QueryResult
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
@@ -14,6 +18,8 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
+import strikt.api.expectThat
+import strikt.assertions.containsExactly
 
 @SpringBootTest
 @ContextConfiguration(initializers = [WireMockInitializer::class])
@@ -21,6 +27,7 @@ import org.springframework.test.web.servlet.post
 @ActiveProfiles("test")
 class MeasurementEndpointTest(
     @Autowired val wireMockServer: WireMockServer,
+    @Autowired val influxDB: InfluxDB,
     @Autowired val mockMvc: MockMvc
 ) {
 
@@ -37,15 +44,9 @@ class MeasurementEndpointTest(
     }
 
     @Test
-    fun `Writes temperature measurement to InfluxDB`() {
+    fun `Writes temperature measurement to InfluxDB`(@Value("\${influxdb.dbUrl}") url: String) {
         // given
-        wireMockServer.stubFor(
-            post(urlMatching("/write(.*)"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(204)
-                )
-        )
+        wireMockServer.stubFor(post(urlMatching("/write(.*)")).willReturn(aResponse().proxiedFrom(url)))
 
         // when
         mockMvc.post("/measurement/temperature") {
@@ -58,14 +59,24 @@ class MeasurementEndpointTest(
         }
 
         // then
-        wireMockServer.verify(
-            1,
-            postRequestedFor(urlPathEqualTo("/write"))
-                .withQueryParam("precision", equalTo("s"))
-                .withQueryParam("db", equalTo("dbName"))
-                .withQueryParam("u", equalTo("user"))
-                .withQueryParam("p", equalTo("pass"))
-                .withRequestBody(equalTo("temp,location=location1 temperature=21.3,humidity=55.3 1607462665"))
+        val results = influxDB.query(Query("""SELECT * FROM temp""")).convertResult()
+        expectThat(results).containsExactly(
+            entry("2020-12-08T21:24:25Z", "location1", 21.3, 55.3)
         )
     }
+
+    private fun QueryResult.convertResult() = results.flatMap {
+        it.series.flatMap { series ->
+            series.values.map { value ->
+                series.columns.zip(value).toMap()
+            }
+        }
+    }
+
+    private fun entry(timestamp: String, location: String, temperature: Double, humidity: Double) = mapOf(
+        "time" to timestamp,
+        "location" to location,
+        "temperature" to temperature,
+        "humidity" to humidity
+    )
 }

@@ -3,8 +3,5 @@ sensors:
     location: location1
 
 influxdb:
-  database: dbName
-  username: user
-  password: pass
   measurements:
     temperature: temp

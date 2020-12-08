@@ -23,6 +23,8 @@ dependencies {
     api("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
     api("com.github.tomakehurst:wiremock:2.27.2")
     api("io.strikt:strikt-core:0.22.1")
+    api("org.influxdb:influxdb-java:2.21")
+    api("org.testcontainers:influxdb:1.15.0")
 }
 
 dependencies {
@@ -33,6 +35,8 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.influxdb:influxdb-java")
+    testImplementation("org.testcontainers:influxdb")
     testImplementation("com.github.tomakehurst:wiremock")
     testImplementation("io.strikt:strikt-core")
 
