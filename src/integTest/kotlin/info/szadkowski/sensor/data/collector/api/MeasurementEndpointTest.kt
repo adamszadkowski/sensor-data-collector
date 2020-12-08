@@ -62,6 +62,9 @@ class MeasurementEndpointTest(
             1,
             postRequestedFor(urlPathEqualTo("/write"))
                 .withQueryParam("precision", equalTo("s"))
+                .withQueryParam("db", equalTo("dbName"))
+                .withQueryParam("u", equalTo("user"))
+                .withQueryParam("p", equalTo("pass"))
                 .withRequestBody(equalTo("temp,location=location1 temperature=21.3,humidity=55.3 1607462665"))
         )
     }

@@ -7,6 +7,9 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConfigurationProperties("influxdb")
 data class InfluxdbProperties(
     val url: String,
+    val database: String,
+    val username: String,
+    val password: String,
     val measurements: Measurements
 ) {
     data class Measurements(
