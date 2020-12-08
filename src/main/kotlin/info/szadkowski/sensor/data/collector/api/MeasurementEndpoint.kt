@@ -21,7 +21,7 @@ class MeasurementEndpoint(
         @RequestHeader("X-API-KEY") apiKey: String,
         @RequestBody measurement: TemperatureMeasurementDto
     ) {
-        measurementService.write(apiKey, measurement.toDomain())
+        measurementService.write(apiKey, measurement.toDomain(), measurement.timestamp)
     }
 
     private fun TemperatureMeasurementDto.toDomain() = TemperatureMeasurement(

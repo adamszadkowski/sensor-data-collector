@@ -52,7 +52,7 @@ class MeasurementEndpointTest(
             accept = MediaType("application", "vnd.sensor.collector.v1+json")
             contentType = MediaType.APPLICATION_JSON
             header("X-API-KEY", "abc")
-            content = """{"temperature": 21.3, "humidity":55.3}"""
+            content = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity":55.3}"""
         }.andExpect {
             status { is2xxSuccessful() }
         }
@@ -61,7 +61,7 @@ class MeasurementEndpointTest(
         wireMockServer.verify(
             1,
             postRequestedFor(urlPathEqualTo("/write"))
-                .withRequestBody(equalTo("temp,location=location1 temperature=21.3,humidity=55.3"))
+                .withRequestBody(equalTo("temp,location=location1 temperature=21.3,humidity=55.3 1607462665"))
         )
     }
 }
