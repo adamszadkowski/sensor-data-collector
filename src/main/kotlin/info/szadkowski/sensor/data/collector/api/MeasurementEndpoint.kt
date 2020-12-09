@@ -5,6 +5,7 @@ import info.szadkowski.sensor.data.collector.api.model.TemperatureMeasurementDto
 import info.szadkowski.sensor.data.collector.domain.MeasurementService
 import info.szadkowski.sensor.data.collector.domain.model.AirQualityMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
@@ -21,6 +22,7 @@ class MeasurementEndpoint(
         path = ["/temperature"],
         consumes = [MediaType.APPLICATION_JSON_VALUE]
     )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun writeTemperatureMeasurement(
         @RequestHeader("X-API-KEY") apiKey: String,
         @RequestBody measurement: TemperatureMeasurementDto
@@ -32,6 +34,7 @@ class MeasurementEndpoint(
         path = ["/air-quality"],
         consumes = [MediaType.APPLICATION_JSON_VALUE]
     )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun writeAirQualityMeasurement(
         @RequestHeader("X-API-KEY") apiKey: String,
         @RequestBody measurement: AirQualityMeasurementDto

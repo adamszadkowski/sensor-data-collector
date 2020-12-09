@@ -72,7 +72,7 @@ class MeasurementEndpointTest(
                 header("X-API-KEY", "abc")
                 content = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}"""
             }.andExpect {
-                status { is2xxSuccessful() }
+                status { isNoContent() }
             }
 
             val results = influxDB.query(Query("""SELECT * FROM temp""")).convertResult()
@@ -94,7 +94,7 @@ class MeasurementEndpointTest(
                 header("X-API-KEY", "def")
                 content = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}"""
             }.andExpect {
-                status { is2xxSuccessful() }
+                status { isNoContent() }
             }
 
             val results = influxDB.query(Query("""SELECT * FROM aqi""")).convertResult()
