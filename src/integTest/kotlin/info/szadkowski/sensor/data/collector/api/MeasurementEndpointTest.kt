@@ -66,7 +66,34 @@ class MeasurementEndpointTest(
 
             val results = influxDB.query(Query("""SELECT * FROM temp""")).convertResult()
             expectThat(results).containsExactly(
-                entry("2020-12-08T21:24:25Z", "location1", 21.3, 55.3)
+                mapOf(
+                    "time" to "2020-12-08T21:24:25Z",
+                    "location" to "location1",
+                    "temperature" to 21.3,
+                    "humidity" to 55.3
+                )
+            )
+        }
+
+        @Test
+        fun `Writes air quality measurement to InfluxDB`() {
+            mockMvc.post("/measurement/air-quality") {
+                accept = MediaType("application", "vnd.sensor.collector.v1+json")
+                contentType = MediaType.APPLICATION_JSON
+                header("X-API-KEY", "def")
+                content = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}"""
+            }.andExpect {
+                status { is2xxSuccessful() }
+            }
+
+            val results = influxDB.query(Query("""SELECT * FROM aqi""")).convertResult()
+            expectThat(results).containsExactly(
+                mapOf(
+                    "time" to "2020-12-09T21:47:32Z",
+                    "location" to "location2",
+                    "pm25" to 5.5,
+                    "pm10" to 10.2
+                )
             )
         }
 
@@ -77,12 +104,5 @@ class MeasurementEndpointTest(
                 }
             }
         }
-
-        private fun entry(timestamp: String, location: String, temperature: Double, humidity: Double) = mapOf(
-            "time" to timestamp,
-            "location" to location,
-            "temperature" to temperature,
-            "humidity" to humidity
-        )
     }
 }
