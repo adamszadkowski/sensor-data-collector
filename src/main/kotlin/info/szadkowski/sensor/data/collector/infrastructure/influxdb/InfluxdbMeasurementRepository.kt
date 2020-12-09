@@ -11,20 +11,19 @@ class InfluxdbMeasurementRepository(
     private val properties: InfluxdbProperties
 ) : MeasurementRepository {
     override fun write(measurement: TemperatureMeasurement, tags: Tags, timestamp: Instant) {
-        influxdbClient.write(
-            db = properties.database,
-            username = properties.username,
-            password = properties.password,
-            content = "${properties.measurements.temperature},location=${tags.location} ${measurement.format()} ${timestamp.epochSecond}"
-        ).execute()
+        writeFormatted(properties.measurements.temperature, measurement.format(), tags, timestamp)
     }
 
     override fun write(measurement: AirQualityMeasurement, tags: Tags, timestamp: Instant) {
+        writeFormatted(properties.measurements.airQuality, measurement.format(), tags, timestamp)
+    }
+
+    private fun writeFormatted(name: String, formattedMeasurement: String, tags: Tags, timestamp: Instant) {
         influxdbClient.write(
             db = properties.database,
             username = properties.username,
             password = properties.password,
-            content = "${properties.measurements.airQuality},location=${tags.location} ${measurement.format()} ${timestamp.epochSecond}"
+            content = "$name,location=${tags.location} $formattedMeasurement ${timestamp.epochSecond}"
         ).execute()
     }
 

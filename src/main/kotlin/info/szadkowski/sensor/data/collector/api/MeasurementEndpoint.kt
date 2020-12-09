@@ -9,15 +9,17 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/measurement")
+@RequestMapping(
+    path = ["/measurement"],
+    produces = ["application/vnd.sensor.collector.v1+json"]
+)
 class MeasurementEndpoint(
     private val measurementService: MeasurementService
 ) {
 
     @PostMapping(
         path = ["/temperature"],
-        consumes = [MediaType.APPLICATION_JSON_VALUE],
-        produces = ["application/vnd.sensor.collector.v1+json"]
+        consumes = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun writeTemperatureMeasurement(
         @RequestHeader("X-API-KEY") apiKey: String,
@@ -28,8 +30,7 @@ class MeasurementEndpoint(
 
     @PostMapping(
         path = ["/air-quality"],
-        consumes = [MediaType.APPLICATION_JSON_VALUE],
-        produces = ["application/vnd.sensor.collector.v1+json"]
+        consumes = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun writeAirQualityMeasurement(
         @RequestHeader("X-API-KEY") apiKey: String,

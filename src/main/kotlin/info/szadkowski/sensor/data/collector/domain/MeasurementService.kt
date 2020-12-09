@@ -11,20 +11,20 @@ class MeasurementService(
 ) {
 
     fun write(apiKey: String, measurement: TemperatureMeasurement, timestamp: Instant) {
-        val sensor = sensorRepository.fetch(apiKey)
         measurementRepository.write(
             measurement = measurement,
-            tags = Tags(location = sensor.location),
+            tags = loadTags(apiKey),
             timestamp = timestamp
         )
     }
 
     fun write(apiKey: String, measurement: AirQualityMeasurement, timestamp: Instant) {
-        val sensor = sensorRepository.fetch(apiKey)
         measurementRepository.write(
             measurement = measurement,
-            tags = Tags(location = sensor.location),
+            tags = loadTags(apiKey),
             timestamp = timestamp
         )
     }
+
+    private fun loadTags(apiKey: String) = Tags(location = sensorRepository.fetch(apiKey).location)
 }
