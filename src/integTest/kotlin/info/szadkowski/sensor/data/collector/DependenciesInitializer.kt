@@ -1,4 +1,4 @@
-package info.szadkowski.sensor.data.collector.wiremock
+package info.szadkowski.sensor.data.collector
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
@@ -9,7 +9,7 @@ import org.springframework.context.event.ContextClosedEvent
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.utility.DockerImageName
 
-class WireMockInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
+class DependenciesInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
     override fun initialize(applicationContext: ConfigurableApplicationContext) {
         val wireMockServer = WireMockServer(WireMockConfiguration.options().dynamicPort())
         val influxDBContainer = KInfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8"))

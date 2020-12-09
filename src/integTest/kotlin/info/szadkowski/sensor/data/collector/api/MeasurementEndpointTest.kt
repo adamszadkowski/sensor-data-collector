@@ -3,7 +3,7 @@ package info.szadkowski.sensor.data.collector.api
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import info.szadkowski.sensor.data.collector.wiremock.WireMockInitializer
+import info.szadkowski.sensor.data.collector.DependenciesInitializer
 import org.influxdb.InfluxDB
 import org.influxdb.InfluxDBFactory
 import org.influxdb.dto.Query
@@ -25,7 +25,7 @@ import strikt.api.expectThat
 import strikt.assertions.containsExactly
 
 @SpringBootTest
-@ContextConfiguration(initializers = [WireMockInitializer::class])
+@ContextConfiguration(initializers = [DependenciesInitializer::class])
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class MeasurementEndpointTest(
