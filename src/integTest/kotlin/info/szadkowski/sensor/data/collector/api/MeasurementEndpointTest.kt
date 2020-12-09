@@ -30,7 +30,6 @@ import strikt.assertions.containsExactly
 @ActiveProfiles("test")
 class MeasurementEndpointTest(
     @Autowired val wireMockServer: WireMockServer,
-    @Autowired val influxDB: InfluxDB,
     @Autowired val mockMvc: MockMvc
 ) {
 
@@ -47,7 +46,9 @@ class MeasurementEndpointTest(
     }
 
     @Nested
-    inner class RealInfluxDBScenarios {
+    inner class RealInfluxDBScenarios(
+        @Autowired val influxDB: InfluxDB
+    ) {
 
         @BeforeEach
         fun delegateToInfluxDB(@Value("\${influxdb.dbUrl}") url: String) {
