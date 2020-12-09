@@ -8,6 +8,8 @@ import org.influxdb.InfluxDB
 import org.influxdb.dto.Query
 import org.influxdb.dto.QueryResult
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -43,40 +45,44 @@ class MeasurementEndpointTest(
         }
     }
 
-    @Test
-    fun `Writes temperature measurement to InfluxDB`(@Value("\${influxdb.dbUrl}") url: String) {
-        // given
-        wireMockServer.stubFor(post(urlMatching("/write(.*)")).willReturn(aResponse().proxiedFrom(url)))
+    @Nested
+    inner class RealInfluxDBScenarios {
 
-        // when
-        mockMvc.post("/measurement/temperature") {
-            accept = MediaType("application", "vnd.sensor.collector.v1+json")
-            contentType = MediaType.APPLICATION_JSON
-            header("X-API-KEY", "abc")
-            content = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity":55.3}"""
-        }.andExpect {
-            status { is2xxSuccessful() }
+        @BeforeEach
+        fun delegateToInfluxDB(@Value("\${influxdb.dbUrl}") url: String) {
+            wireMockServer.stubFor(post(urlMatching("/write(.*)")).willReturn(aResponse().proxiedFrom(url)))
         }
 
-        // then
-        val results = influxDB.query(Query("""SELECT * FROM temp""")).convertResult()
-        expectThat(results).containsExactly(
-            entry("2020-12-08T21:24:25Z", "location1", 21.3, 55.3)
-        )
-    }
+        @Test
+        fun `Writes temperature measurement to InfluxDB`() {
+            mockMvc.post("/measurement/temperature") {
+                accept = MediaType("application", "vnd.sensor.collector.v1+json")
+                contentType = MediaType.APPLICATION_JSON
+                header("X-API-KEY", "abc")
+                content = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}"""
+            }.andExpect {
+                status { is2xxSuccessful() }
+            }
 
-    private fun QueryResult.convertResult() = results.flatMap {
-        it.series.flatMap { series ->
-            series.values.map { value ->
-                series.columns.zip(value).toMap()
+            val results = influxDB.query(Query("""SELECT * FROM temp""")).convertResult()
+            expectThat(results).containsExactly(
+                entry("2020-12-08T21:24:25Z", "location1", 21.3, 55.3)
+            )
+        }
+
+        private fun QueryResult.convertResult() = results.flatMap {
+            it.series.flatMap { series ->
+                series.values.map { value ->
+                    series.columns.zip(value).toMap()
+                }
             }
         }
-    }
 
-    private fun entry(timestamp: String, location: String, temperature: Double, humidity: Double) = mapOf(
-        "time" to timestamp,
-        "location" to location,
-        "temperature" to temperature,
-        "humidity" to humidity
-    )
+        private fun entry(timestamp: String, location: String, temperature: Double, humidity: Double) = mapOf(
+            "time" to timestamp,
+            "location" to location,
+            "temperature" to temperature,
+            "humidity" to humidity
+        )
+    }
 }
