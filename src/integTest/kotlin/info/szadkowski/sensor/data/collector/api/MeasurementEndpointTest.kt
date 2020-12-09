@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import info.szadkowski.sensor.data.collector.wiremock.WireMockInitializer
 import org.influxdb.InfluxDB
+import org.influxdb.InfluxDBFactory
 import org.influxdb.dto.Query
 import org.influxdb.dto.QueryResult
 import org.junit.jupiter.api.AfterEach
@@ -51,6 +52,15 @@ class MeasurementEndpointTest(
         @BeforeEach
         fun delegateToInfluxDB(@Value("\${influxdb.dbUrl}") url: String) {
             wireMockServer.stubFor(post(urlMatching("/write(.*)")).willReturn(aResponse().proxiedFrom(url)))
+        }
+
+        @AfterEach
+        fun clearDatabase(@Value("\${influxdb.dbUrl}") url: String, @Value("\${influxdb.database}") db: String) {
+            InfluxDBFactory.connect(url, "admin", "admin").use {
+                it.setDatabase(db)
+                it.query(Query("DROP MEASUREMENT temp"))
+                it.query(Query("DROP MEASUREMENT aqi"))
+            }
         }
 
         @Test

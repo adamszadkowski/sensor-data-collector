@@ -16,6 +16,8 @@ class WireMockInitializer : ApplicationContextInitializer<ConfigurableApplicatio
             .withDatabase(database)
             .withUsername(username)
             .withPassword(password)
+            .withAdmin("admin")
+            .withAdminPassword("admin")
 
         wireMockServer.start()
         influxDBContainer.start()
