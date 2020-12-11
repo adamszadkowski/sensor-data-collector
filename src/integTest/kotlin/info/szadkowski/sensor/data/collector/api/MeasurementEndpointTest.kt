@@ -149,6 +149,52 @@ class MeasurementEndpointTest(
         }
     }
 
+    @Nested
+    inner class ErrorCases {
+
+        @ParameterizedTest
+        @ValueSource(
+            ints = [
+                500,
+                404
+            ]
+        )
+        fun `Handle failed dependency on temperature measurement`(status: Int) {
+            wireMockServer.stubFor(
+                post(urlMatching("/write(.*)"))
+                    .willReturn(aResponse().withStatus(status))
+            )
+
+            postTemperature(
+                apiKey = "abc",
+                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}"""
+            ).andExpect {
+                status { isFailedDependency() }
+            }
+        }
+
+        @ParameterizedTest
+        @ValueSource(
+            ints = [
+                500,
+                404
+            ]
+        )
+        fun `Handle failed dependency on air quality measurement`(status: Int) {
+            wireMockServer.stubFor(
+                post(urlMatching("/write(.*)"))
+                    .willReturn(aResponse().withStatus(status))
+            )
+
+            postAirQuality(
+                apiKey = "abc",
+                body = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}"""
+            ).andExpect {
+                status { isFailedDependency() }
+            }
+        }
+    }
+
     private fun postTemperature(apiKey: String, body: String) = postMeasurement("temperature", apiKey, body)
     private fun postAirQuality(apiKey: String, body: String) = postMeasurement("air-quality", apiKey, body)
     private fun postMeasurement(measurement: String, apiKey: String, body: String) =

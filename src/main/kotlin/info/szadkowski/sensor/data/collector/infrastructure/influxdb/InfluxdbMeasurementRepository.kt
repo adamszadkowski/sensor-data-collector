@@ -1,6 +1,7 @@
 package info.szadkowski.sensor.data.collector.infrastructure.influxdb
 
 import info.szadkowski.sensor.data.collector.domain.MeasurementRepository
+import info.szadkowski.sensor.data.collector.domain.WriteFailedException
 import info.szadkowski.sensor.data.collector.domain.model.AirQualityMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.Tags
 import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
@@ -19,12 +20,15 @@ class InfluxdbMeasurementRepository(
     }
 
     private fun writeFormatted(name: String, formattedMeasurement: String, tags: Tags, timestamp: Instant) {
-        influxdbClient.write(
+        val response = influxdbClient.write(
             db = properties.database,
             username = properties.username,
             password = properties.password,
             content = "$name,location=${tags.location} $formattedMeasurement ${timestamp.epochSecond}"
         ).execute()
+        if (!response.isSuccessful) {
+            throw WriteFailedException()
+        }
     }
 
     private fun TemperatureMeasurement.format() = "temperature=$temperature,humidity=$humidity"
