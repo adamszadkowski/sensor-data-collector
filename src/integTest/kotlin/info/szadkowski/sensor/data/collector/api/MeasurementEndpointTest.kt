@@ -68,12 +68,10 @@ class MeasurementEndpointTest(
 
         @Test
         fun `Writes temperature measurement to InfluxDB`() {
-            mockMvc.post("/measurement/temperature") {
-                accept = MediaType("application", "vnd.sensor.collector.v1+json")
-                contentType = MediaType.APPLICATION_JSON
-                header("X-API-KEY", "abc")
-                content = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}"""
-            }.andExpect {
+            postTemperature(
+                apiKey = "abc",
+                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}"""
+            ).andExpect {
                 status { isNoContent() }
             }
 
@@ -90,12 +88,10 @@ class MeasurementEndpointTest(
 
         @Test
         fun `Writes air quality measurement to InfluxDB`() {
-            mockMvc.post("/measurement/air-quality") {
-                accept = MediaType("application", "vnd.sensor.collector.v1+json")
-                contentType = MediaType.APPLICATION_JSON
-                header("X-API-KEY", "def")
-                content = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}"""
-            }.andExpect {
+            postAirQuality(
+                apiKey = "def",
+                body = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}"""
+            ).andExpect {
                 status { isNoContent() }
             }
 
@@ -119,12 +115,10 @@ class MeasurementEndpointTest(
             ]
         )
         fun `Fail on missing property in temperature measurement`(body: String) {
-            mockMvc.post("/measurement/temperature") {
-                accept = MediaType("application", "vnd.sensor.collector.v1+json")
-                contentType = MediaType.APPLICATION_JSON
-                header("X-API-KEY", "abc")
-                content = body
-            }.andExpect {
+            postTemperature(
+                apiKey = "def",
+                body = body
+            ).andExpect {
                 status { isBadRequest() }
             }
         }
@@ -138,12 +132,10 @@ class MeasurementEndpointTest(
             ]
         )
         fun `Fail on missing property in air quality measurement`(body: String) {
-            mockMvc.post("/measurement/air-quality") {
-                accept = MediaType("application", "vnd.sensor.collector.v1+json")
-                contentType = MediaType.APPLICATION_JSON
-                header("X-API-KEY", "def")
-                content = body
-            }.andExpect {
+            postAirQuality(
+                apiKey = "abc",
+                body = body
+            ).andExpect {
                 status { isBadRequest() }
             }
         }
@@ -156,4 +148,14 @@ class MeasurementEndpointTest(
             }
         }
     }
+
+    private fun postTemperature(apiKey: String, body: String) = postMeasurement("temperature", apiKey, body)
+    private fun postAirQuality(apiKey: String, body: String) = postMeasurement("air-quality", apiKey, body)
+    private fun postMeasurement(measurement: String, apiKey: String, body: String) =
+        mockMvc.post("/measurement/$measurement") {
+            accept = MediaType("application", "vnd.sensor.collector.v1+json")
+            contentType = MediaType.APPLICATION_JSON
+            header("X-API-KEY", apiKey)
+            content = body
+        }
 }
