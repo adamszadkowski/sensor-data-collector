@@ -34,6 +34,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.influxdb:influxdb-java")
     testImplementation("org.testcontainers:influxdb")

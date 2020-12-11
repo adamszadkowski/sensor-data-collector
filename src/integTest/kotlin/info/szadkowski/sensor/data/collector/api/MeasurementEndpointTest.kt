@@ -12,6 +12,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -106,6 +108,44 @@ class MeasurementEndpointTest(
                     "pm10" to 10.2
                 )
             )
+        }
+
+        @ParameterizedTest
+        @ValueSource(
+            strings = [
+                """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3}""",
+                """{"timestamp": "2020-12-08T21:24:25Z", "humidity": 55.3}""",
+                """{"temperature": 21.3, "humidity": 55.3}"""
+            ]
+        )
+        fun `Fail on missing property in temperature measurement`(body: String) {
+            mockMvc.post("/measurement/temperature") {
+                accept = MediaType("application", "vnd.sensor.collector.v1+json")
+                contentType = MediaType.APPLICATION_JSON
+                header("X-API-KEY", "abc")
+                content = body
+            }.andExpect {
+                status { isBadRequest() }
+            }
+        }
+
+        @ParameterizedTest
+        @ValueSource(
+            strings = [
+                """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5}""",
+                """{"timestamp": "2020-12-09T21:47:32Z", "pm10": 10.2}""",
+                """{"pm25": 5.5, "pm10": 10.2}"""
+            ]
+        )
+        fun `Fail on missing property in air quality measurement`(body: String) {
+            mockMvc.post("/measurement/air-quality") {
+                accept = MediaType("application", "vnd.sensor.collector.v1+json")
+                contentType = MediaType.APPLICATION_JSON
+                header("X-API-KEY", "def")
+                content = body
+            }.andExpect {
+                status { isBadRequest() }
+            }
         }
 
         private fun QueryResult.convertResult() = results.flatMap {
