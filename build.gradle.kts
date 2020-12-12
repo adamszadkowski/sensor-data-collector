@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     val kotlinVersion = "1.4.20"
@@ -45,6 +46,9 @@ dependencies {
 }
 
 tasks {
+    getByName<BootJar>("bootJar") {
+        archiveFileName.set("sensor-data-collector.jar")
+    }
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "14"
     }
