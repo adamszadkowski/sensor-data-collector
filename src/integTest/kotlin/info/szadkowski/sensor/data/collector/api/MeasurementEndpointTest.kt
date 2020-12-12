@@ -166,6 +166,34 @@ class MeasurementEndpointTest(
             }
         }
 
+        @Test
+        fun `Fail on missing api key in temperature measurement`() {
+            mockMvc.post("/measurement/${"temperature"}") {
+                accept = MediaType("application", "vnd.sensor.collector.v1+json")
+                contentType = MediaType.APPLICATION_JSON
+                content = """{}"""
+            }.andExpect {
+                status {
+                    isBadRequest()
+                    reason("Missing request header 'X-API-KEY' for method parameter of type String")
+                }
+            }
+        }
+
+        @Test
+        fun `Fail on missing api key in air quality measurement`() {
+            mockMvc.post("/measurement/${"air-quality"}") {
+                accept = MediaType("application", "vnd.sensor.collector.v1+json")
+                contentType = MediaType.APPLICATION_JSON
+                content = """{}"""
+            }.andExpect {
+                status {
+                    isBadRequest()
+                    reason("Missing request header 'X-API-KEY' for method parameter of type String")
+                }
+            }
+        }
+
         private fun QueryResult.convertResult() = results.flatMap {
             it.series.flatMap { series ->
                 series.values.map { value ->
