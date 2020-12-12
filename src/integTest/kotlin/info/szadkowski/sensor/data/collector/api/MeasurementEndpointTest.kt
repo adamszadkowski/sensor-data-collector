@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -107,19 +108,22 @@ class MeasurementEndpointTest(
         }
 
         @ParameterizedTest
-        @ValueSource(
-            strings = [
-                """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3}""",
-                """{"timestamp": "2020-12-08T21:24:25Z", "humidity": 55.3}""",
-                """{"temperature": 21.3, "humidity": 55.3}"""
+        @CsvSource(
+            value = [
+                """'{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3}', 'missing humidity'""",
+                """'{"timestamp": "2020-12-08T21:24:25Z", "humidity": 55.3}', 'missing temperature'""",
+                """'{"temperature": 21.3, "humidity": 55.3}', 'missing timestamp'"""
             ]
         )
-        fun `Fail on missing property in temperature measurement`(body: String) {
+        fun `Fail on missing property in temperature measurement`(body: String, message: String) {
             postTemperature(
                 apiKey = "def",
                 body = body
             ).andExpect {
-                status { isBadRequest() }
+                status {
+                    isBadRequest()
+                    reason(message)
+                }
             }
         }
 

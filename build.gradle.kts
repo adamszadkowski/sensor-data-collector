@@ -31,6 +31,7 @@ dependencies {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.squareup.retrofit2:retrofit")
     implementation("com.squareup.retrofit2:converter-scalars")
 
@@ -50,7 +51,10 @@ tasks {
         archiveFileName.set("sensor-data-collector.jar")
     }
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "14"
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "14"
+        }
     }
     withType<Test> {
         useJUnitPlatform()
