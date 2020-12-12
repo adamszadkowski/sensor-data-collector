@@ -140,6 +140,26 @@ class MeasurementEndpointTest(
             }
         }
 
+        @Test
+        fun `Fail on incorrect api key in temperature measurement`() {
+            postTemperature(
+                apiKey = "missing",
+                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}"""
+            ).andExpect {
+                status { isBadRequest() }
+            }
+        }
+
+        @Test
+        fun `Fail on incorrect api key in air quality measurement`() {
+            postAirQuality(
+                apiKey = "missing",
+                body = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}"""
+            ).andExpect {
+                status { isBadRequest() }
+            }
+        }
+
         private fun QueryResult.convertResult() = results.flatMap {
             it.series.flatMap { series ->
                 series.values.map { value ->
