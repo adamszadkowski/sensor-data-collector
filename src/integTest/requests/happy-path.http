@@ -1,0 +1,25 @@
+### Create temperature measurement
+
+POST http://localhost/measurement/temperature
+Accept: application/vnd.sensor.collector.v1+json
+Content-Type: application/vnd.sensor.collector.v1+json
+X-API-KEY: abc
+
+{
+    "timestamp": "2020-12-19T18:40:33.213+01:00",
+    "temperature": 24.4,
+    "humidity": 55.8
+}
+
+### Create air quality measurement
+
+POST http://localhost/measurement/air-quality
+Accept: application/vnd.sensor.collector.v1+json
+Content-Type: application/vnd.sensor.collector.v1+json
+X-API-KEY: abc
+
+{
+    "timestamp": "2020-12-19T18:40:33.213+01:00",
+    "pm25": 2.5,
+    "pm10": 7.6
+}
