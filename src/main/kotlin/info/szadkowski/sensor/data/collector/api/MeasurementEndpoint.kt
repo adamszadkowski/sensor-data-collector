@@ -6,7 +6,6 @@ import info.szadkowski.sensor.data.collector.domain.MeasurementService
 import info.szadkowski.sensor.data.collector.domain.model.AirQualityMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -14,17 +13,15 @@ import javax.validation.Valid
 @RestController
 @RequestMapping(
     path = ["/measurement"],
-    produces = ["application/vnd.sensor.collector.v1+json"]
+    produces = ["application/vnd.sensor.collector.v1+json"],
+    consumes = ["application/vnd.sensor.collector.v1+json"]
 )
 @Validated
 class MeasurementEndpoint(
     private val measurementService: MeasurementService
 ) {
 
-    @PostMapping(
-        path = ["/temperature"],
-        consumes = [MediaType.APPLICATION_JSON_VALUE]
-    )
+    @PostMapping(path = ["/temperature"])
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun writeTemperatureMeasurement(
         @RequestHeader("X-API-KEY") apiKey: String,
@@ -33,10 +30,7 @@ class MeasurementEndpoint(
         measurementService.write(apiKey, measurement.toDomain(), measurement.timestamp!!)
     }
 
-    @PostMapping(
-        path = ["/air-quality"],
-        consumes = [MediaType.APPLICATION_JSON_VALUE]
-    )
+    @PostMapping(path = ["/air-quality"])
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun writeAirQualityMeasurement(
         @RequestHeader("X-API-KEY") apiKey: String,

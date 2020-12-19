@@ -173,8 +173,8 @@ class MeasurementEndpointTest(
         @Test
         fun `Fail on missing api key in temperature measurement`() {
             mockMvc.post("/measurement/${"temperature"}") {
-                accept = MediaType("application", "vnd.sensor.collector.v1+json")
-                contentType = MediaType.APPLICATION_JSON
+                accept = mediaType
+                contentType = mediaType
                 content = """{}"""
             }.andExpect {
                 status {
@@ -187,8 +187,8 @@ class MeasurementEndpointTest(
         @Test
         fun `Fail on missing api key in air quality measurement`() {
             mockMvc.post("/measurement/${"air-quality"}") {
-                accept = MediaType("application", "vnd.sensor.collector.v1+json")
-                contentType = MediaType.APPLICATION_JSON
+                accept = mediaType
+                contentType = mediaType
                 content = """{}"""
             }.andExpect {
                 status {
@@ -257,9 +257,11 @@ class MeasurementEndpointTest(
     private fun postAirQuality(apiKey: String, body: String) = postMeasurement("air-quality", apiKey, body)
     private fun postMeasurement(measurement: String, apiKey: String, body: String) =
         mockMvc.post("/measurement/$measurement") {
-            accept = MediaType("application", "vnd.sensor.collector.v1+json")
-            contentType = MediaType.APPLICATION_JSON
+            accept = mediaType
+            contentType = mediaType
             header("X-API-KEY", apiKey)
             content = body
         }
+
+    private val mediaType = MediaType("application", "vnd.sensor.collector.v1+json")
 }
