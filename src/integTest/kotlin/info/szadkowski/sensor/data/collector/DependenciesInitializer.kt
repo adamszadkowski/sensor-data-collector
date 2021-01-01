@@ -9,37 +9,44 @@ import org.springframework.context.event.ContextClosedEvent
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.utility.DockerImageName
 
-class DependenciesInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
+class DependenciesInitializer(
+    private val shouldStartWiremock: Boolean = true
+) : ApplicationContextInitializer<ConfigurableApplicationContext> {
     override fun initialize(applicationContext: ConfigurableApplicationContext) {
-        val wireMockServer = WireMockServer(WireMockConfiguration.options().dynamicPort())
-        val influxDBContainer = KInfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8"))
-            .withDatabase(database)
-            .withUsername(username)
-            .withPassword(password)
-            .withAdmin("admin")
-            .withAdminPassword("admin")
+        val influxDBContainer = startInfluxdb(applicationContext)
 
-        wireMockServer.start()
-        influxDBContainer.start()
-
-        applicationContext.beanFactory.registerSingleton("wireMockServer", wireMockServer)
-        applicationContext.beanFactory.registerSingleton("influxDB", influxDBContainer.newInfluxDB)
-
-        applicationContext.addApplicationListener {
-            if (it is ContextClosedEvent) {
-                influxDBContainer.stop()
-                wireMockServer.stop()
-            }
+        val influxdbUrl = when (shouldStartWiremock) {
+            true -> startWiremock(applicationContext).baseUrl()
+            else -> influxDBContainer.url
         }
-
         TestPropertyValues.of(
-            "influxdb.url=${wireMockServer.baseUrl()}",
+            "influxdb.url=$influxdbUrl",
             "influxdb.dbUrl=${influxDBContainer.url}",
             "influxdb.database=$database",
             "influxdb.username=$username",
             "influxdb.password=$password"
         ).applyTo(applicationContext)
     }
+
+    private fun startInfluxdb(applicationContext: ConfigurableApplicationContext) =
+        KInfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8"))
+            .withDatabase(database)
+            .withUsername(username)
+            .withPassword(password)
+            .withAdmin("admin")
+            .withAdminPassword("admin")
+            .apply { start() }
+            .also { applicationContext.beanFactory.registerSingleton("influxDB", it.newInfluxDB) }
+            .also { applicationContext.onClose { it.stop() } }
+
+    private fun startWiremock(applicationContext: ConfigurableApplicationContext) =
+        WireMockServer(WireMockConfiguration.options().dynamicPort())
+            .apply { start() }
+            .also { applicationContext.beanFactory.registerSingleton("wireMockServer", it) }
+            .also { applicationContext.onClose { it.stop() } }
+
+    private fun ConfigurableApplicationContext.onClose(action: () -> Unit) =
+        addApplicationListener { if (it is ContextClosedEvent) action() }
 
     class KInfluxDBContainer(dockerImageName: DockerImageName) : InfluxDBContainer<KInfluxDBContainer>(dockerImageName)
 
