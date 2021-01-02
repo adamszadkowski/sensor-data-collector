@@ -13,12 +13,12 @@ open class InfluxdbMeasurementRepository(
     private val properties: InfluxdbProperties
 ) : MeasurementRepository {
 
-    @Timed("clients.influxdb.write.temperature")
+    @Timed(value = "clients.influxdb.write", extraTags = ["measurement", "temperature"])
     override fun write(measurement: TemperatureMeasurement, tags: Tags, timestamp: Instant) {
         writeFormatted(properties.measurements.temperature, measurement.format(), tags, timestamp)
     }
 
-    @Timed("clients.influxdb.write.air-quality")
+    @Timed(value = "clients.influxdb.write", extraTags = ["measurement", "air-quality"])
     override fun write(measurement: AirQualityMeasurement, tags: Tags, timestamp: Instant) {
         writeFormatted(properties.measurements.airQuality, measurement.format(), tags, timestamp)
     }
