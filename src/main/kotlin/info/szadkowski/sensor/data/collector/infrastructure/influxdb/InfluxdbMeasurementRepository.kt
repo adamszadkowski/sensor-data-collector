@@ -5,16 +5,20 @@ import info.szadkowski.sensor.data.collector.domain.WriteFailedException
 import info.szadkowski.sensor.data.collector.domain.model.AirQualityMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.Tags
 import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
+import io.micrometer.core.annotation.Timed
 import java.time.Instant
 
-class InfluxdbMeasurementRepository(
+open class InfluxdbMeasurementRepository(
     private val influxdbClient: InfluxdbClient,
     private val properties: InfluxdbProperties
 ) : MeasurementRepository {
+
+    @Timed("clients.influxdb.write.temperature")
     override fun write(measurement: TemperatureMeasurement, tags: Tags, timestamp: Instant) {
         writeFormatted(properties.measurements.temperature, measurement.format(), tags, timestamp)
     }
 
+    @Timed("clients.influxdb.write.air-quality")
     override fun write(measurement: AirQualityMeasurement, tags: Tags, timestamp: Instant) {
         writeFormatted(properties.measurements.airQuality, measurement.format(), tags, timestamp)
     }
