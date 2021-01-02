@@ -1,7 +1,7 @@
 # sensor-data-collector
 
-![](https://img.shields.io/docker/pulls/klyman/#sensor-data-collector.svg)
-![](https://img.shields.io/docker/stars/klyman/#sensor-data-collector.svg)
+![](https://img.shields.io/docker/pulls/klyman/sensor-data-collector.svg)
+![](https://img.shields.io/docker/stars/klyman/sensor-data-collector.svg)
 
 Sensor-data-collector has been created as a facade service for InfluxDB. It is configured with sensor configuration
 therefore it simplifies requests that have to be made for sensors themselves.
