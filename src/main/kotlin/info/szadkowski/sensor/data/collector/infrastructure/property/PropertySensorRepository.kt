@@ -14,5 +14,6 @@ class PropertySensorRepository(
         .mapValues { (_, v) -> Sensor(v.location) }
 
     @Counted(value = "exceptions", recordFailuresOnly = true, extraTags = ["action", "fetch-sensor"])
-    override fun fetch(apiKey: String): Sensor = sensorsByKey[apiKey] ?: throw MissingApiKeyException()
+    override fun fetch(apiKey: String): Sensor =
+        sensorsByKey[apiKey] ?: throw MissingApiKeyException("Cannot find API key $apiKey")
 }

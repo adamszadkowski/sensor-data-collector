@@ -1,3 +1,3 @@
 package info.szadkowski.sensor.data.collector.domain
 
-class MissingApiKeyException : RuntimeException()
+class MissingApiKeyException(message: String) : RuntimeException(message)
