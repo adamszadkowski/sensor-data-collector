@@ -10,4 +10,7 @@ class MetricsConfiguration {
 
     @Bean
     fun timedAspect(registry: MeterRegistry) = TimedAspect(registry)
+
+    @Bean
+    fun sensorVersionTagsContributor() = SensorVersionTagsContributor()
 }
