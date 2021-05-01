@@ -2,13 +2,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    val kotlinVersion = "1.4.20"
+    val kotlinVersion = "1.4.30"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
 
-    id("org.springframework.boot") version "2.4.0"
+    id("org.springframework.boot") version "2.4.5"
 
-    id("nebula.integtest") version "7.0.9"
+    id("nebula.integtest") version "8.0.0"
 }
 
 repositories {
@@ -17,15 +17,15 @@ repositories {
 
 dependencies {
     implementation(platform(kotlin("bom")))
-    implementation(platform("org.junit:junit-bom:5.7.0"))
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.4.0"))
+    implementation(platform("org.junit:junit-bom:5.7.1"))
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.4.5"))
     val retrofitVersion = "2.9.0"
     api("com.squareup.retrofit2:retrofit:$retrofitVersion")
     api("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
     api("com.github.tomakehurst:wiremock:2.27.2")
-    api("io.strikt:strikt-core:0.22.1")
+    api("io.strikt:strikt-core:0.31.0")
     api("org.influxdb:influxdb-java:2.21")
-    api("org.testcontainers:influxdb:1.15.0")
+    api("org.testcontainers:influxdb:1.15.3")
 }
 
 dependencies {
