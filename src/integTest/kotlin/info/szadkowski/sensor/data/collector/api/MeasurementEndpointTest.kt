@@ -1,7 +1,6 @@
 package info.szadkowski.sensor.data.collector.api
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.influxdb.InfluxDB
 import org.influxdb.InfluxDBFactory
@@ -32,18 +31,6 @@ class MeasurementEndpointTest(
     @Autowired val wireMockServer: WireMockServer,
     @Autowired val mockMvc: MockMvc
 ) {
-
-    @AfterEach
-    fun validateWireMock() {
-        val unmatchedRequests = wireMockServer.findAllUnmatchedRequests()
-        if (unmatchedRequests.isNotEmpty()) {
-            val nearMisses = wireMockServer.findNearMissesForAllUnmatchedRequests()
-            throw when {
-                nearMisses.isNotEmpty() -> VerificationException.forUnmatchedNearMisses(nearMisses)
-                else -> VerificationException.forUnmatchedRequests(unmatchedRequests)
-            }
-        }
-    }
 
     @Nested
     inner class RealInfluxDBScenarios(
