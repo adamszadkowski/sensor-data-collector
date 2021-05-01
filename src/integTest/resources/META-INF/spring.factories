@@ -1,0 +1,2 @@
+org.springframework.test.context.TestExecutionListener = \
+  info.szadkowski.sensor.data.collector.WireMockTestExecutionListener

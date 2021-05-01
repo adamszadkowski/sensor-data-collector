@@ -8,3 +8,7 @@ influxdb:
   measurements:
     temperature: temp
     air-quality: aqi
+
+context:
+  initializer:
+    classes: info.szadkowski.sensor.data.collector.DependenciesInitializer
