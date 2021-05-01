@@ -29,21 +29,21 @@ import strikt.assertions.containsExactly
 @ActiveProfiles("test")
 class MeasurementEndpointTest(
     @Autowired val wireMockServer: WireMockServer,
-    @Autowired val mockMvc: MockMvc
+    @Autowired val mockMvc: MockMvc,
 ) {
 
     @Nested
-    inner class RealInfluxDBScenarios(
-        @Autowired val influxDB: InfluxDB
+    inner class `Real InfluxDB scenarios`(
+        @Autowired val influxDB: InfluxDB,
     ) {
 
         @BeforeEach
-        fun delegateToInfluxDB(@Value("\${influxdb.dbUrl}") url: String) {
+        fun `Delegate to InfluxDB`(@Value("\${influxdb.dbUrl}") url: String) {
             wireMockServer.stubFor(post(urlMatching("/write(.*)")).willReturn(aResponse().proxiedFrom(url)))
         }
 
         @AfterEach
-        fun clearDatabase(@Value("\${influxdb.dbUrl}") url: String, @Value("\${influxdb.database}") db: String) {
+        fun `Clear InfluxDB`(@Value("\${influxdb.dbUrl}") url: String, @Value("\${influxdb.database}") db: String) {
             InfluxDBFactory.connect(url, "admin", "admin").use {
                 it.setDatabase(db)
                 it.query(Query("DROP MEASUREMENT temp"))
@@ -55,7 +55,7 @@ class MeasurementEndpointTest(
         fun `Writes temperature measurement to InfluxDB`() {
             postTemperature(
                 apiKey = "abc",
-                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}"""
+                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}""",
             ).andExpect {
                 status { isNoContent() }
             }
@@ -66,7 +66,7 @@ class MeasurementEndpointTest(
                     "time" to "2020-12-08T21:24:25Z",
                     "location" to "location1",
                     "temperature" to 21.3,
-                    "humidity" to 55.3
+                    "humidity" to 55.3,
                 )
             )
         }
@@ -75,7 +75,7 @@ class MeasurementEndpointTest(
         fun `Writes air quality measurement to InfluxDB`() {
             postAirQuality(
                 apiKey = "def",
-                body = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}"""
+                body = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}""",
             ).andExpect {
                 status { isNoContent() }
             }
@@ -86,7 +86,7 @@ class MeasurementEndpointTest(
                     "time" to "2020-12-09T21:47:32Z",
                     "location" to "location2",
                     "pm25" to 5.5,
-                    "pm10" to 10.2
+                    "pm10" to 10.2,
                 )
             )
         }
@@ -96,13 +96,13 @@ class MeasurementEndpointTest(
             value = [
                 """'{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3}', 'missing humidity'""",
                 """'{"timestamp": "2020-12-08T21:24:25Z", "humidity": 55.3}', 'missing temperature'""",
-                """'{"temperature": 21.3, "humidity": 55.3}', 'missing timestamp'"""
+                """'{"temperature": 21.3, "humidity": 55.3}', 'missing timestamp'""",
             ]
         )
         fun `Fail on missing property in temperature measurement`(body: String, message: String) {
             postTemperature(
                 apiKey = "def",
-                body = body
+                body = body,
             ).andExpect {
                 status {
                     isBadRequest()
@@ -116,13 +116,13 @@ class MeasurementEndpointTest(
             strings = [
                 """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5}""",
                 """{"timestamp": "2020-12-09T21:47:32Z", "pm10": 10.2}""",
-                """{"pm25": 5.5, "pm10": 10.2}"""
+                """{"pm25": 5.5, "pm10": 10.2}""",
             ]
         )
         fun `Fail on missing property in air quality measurement`(body: String) {
             postAirQuality(
                 apiKey = "abc",
-                body = body
+                body = body,
             ).andExpect {
                 status { isBadRequest() }
             }
@@ -132,7 +132,7 @@ class MeasurementEndpointTest(
         fun `Fail on incorrect api key in temperature measurement`() {
             postTemperature(
                 apiKey = "missing",
-                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}"""
+                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}""",
             ).andExpect {
                 status {
                     isBadRequest()
@@ -145,7 +145,7 @@ class MeasurementEndpointTest(
         fun `Fail on incorrect api key in air quality measurement`() {
             postAirQuality(
                 apiKey = "missing",
-                body = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}"""
+                body = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}""",
             ).andExpect {
                 status {
                     isBadRequest()
@@ -192,13 +192,13 @@ class MeasurementEndpointTest(
     }
 
     @Nested
-    inner class ErrorCases {
+    inner class `Error cases` {
 
         @ParameterizedTest
         @ValueSource(
             ints = [
                 500,
-                404
+                404,
             ]
         )
         fun `Handle failed dependency on temperature measurement`(status: Int) {
@@ -209,7 +209,7 @@ class MeasurementEndpointTest(
 
             postTemperature(
                 apiKey = "abc",
-                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}"""
+                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}""",
             ).andExpect {
                 status { isFailedDependency() }
             }
@@ -219,7 +219,7 @@ class MeasurementEndpointTest(
         @ValueSource(
             ints = [
                 500,
-                404
+                404,
             ]
         )
         fun `Handle failed dependency on air quality measurement`(status: Int) {
@@ -230,7 +230,7 @@ class MeasurementEndpointTest(
 
             postAirQuality(
                 apiKey = "abc",
-                body = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}"""
+                body = """{"timestamp": "2020-12-09T21:47:32Z", "pm25": 5.5, "pm10": 10.2}""",
             ).andExpect {
                 status { isFailedDependency() }
             }
