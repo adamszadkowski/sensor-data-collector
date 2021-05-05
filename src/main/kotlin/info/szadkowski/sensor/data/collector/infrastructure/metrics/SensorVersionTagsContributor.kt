@@ -14,6 +14,7 @@ class SensorVersionTagsContributor : WebMvcTagsContributor {
         exception: Throwable?,
     ) = Tags.of(
         Tag.of("sensor-version", request.getHeader("Sensor-Version") ?: "unknown"),
+        Tag.of("sensor-type", request.getHeader("Sensor-Type") ?: "unknown"),
     )
 
     override fun getLongRequestTags(request: HttpServletRequest?, handler: Any?) = Tags.empty()
