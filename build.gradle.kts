@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    val kotlinVersion = "1.4.30"
+    val kotlinVersion = "1.5.20"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
 
-    id("org.springframework.boot") version "2.4.5"
+    id("org.springframework.boot") version "2.5.2"
 
     id("nebula.integtest") version "8.0.0"
 }
@@ -17,8 +17,8 @@ repositories {
 
 dependencies {
     implementation(platform(kotlin("bom")))
-    implementation(platform("org.junit:junit-bom:5.7.1"))
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.4.5"))
+    implementation(platform("org.junit:junit-bom:5.7.2"))
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.5.2"))
     val retrofitVersion = "2.9.0"
     api("com.squareup.retrofit2:retrofit:$retrofitVersion")
     api("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
