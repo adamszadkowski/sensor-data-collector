@@ -1,4 +1,4 @@
-ARG JAVA_IMAGE=openjdk:14
+ARG JAVA_IMAGE=openjdk:15
 
 FROM ${JAVA_IMAGE} as build
 
