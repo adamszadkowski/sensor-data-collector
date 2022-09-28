@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     implementation(platform(kotlin("bom")))
-    implementation(platform("org.junit:junit-bom:5.7.2"))
+    implementation(platform("org.junit:junit-bom:5.9.1"))
     implementation(platform("org.springframework.boot:spring-boot-dependencies:2.7.4"))
     val retrofitVersion = "2.9.0"
     api("com.squareup.retrofit2:retrofit:$retrofitVersion")
