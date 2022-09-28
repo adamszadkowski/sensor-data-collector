@@ -8,10 +8,11 @@ therefore it simplifies requests that have to be made for sensors themselves.
 
 ## API
 
-Service exposes two endpoints for each type of measurement:
+Service exposes endpoints for each type of measurement:
 
 - temperature
 - air quality
+- air pressure
 
 Sample requests can be found [here](src/integTest/requests/happy-path.http).
 
@@ -34,6 +35,7 @@ Container is configured by environment variables:
 - `INFLUXDB_DATABASE` - database name in InfluxDB
 - `INFLUXDB_MEASUREMENTS_TEMPERATURE` - table name for temperature measurements
 - `INFLUXDB_MEASUREMENTS_AIR_QUALITY` - table name for air quality measurements
+- `INFLUXDB_MEASUREMENTS_AIR_PRESSURE` - table name for air pressure measurements
 - `SENSORS[0]_API_KEY` - API key for first sensor
 - `SENSORS[0]_LOCATION` - location tag of first sensor
 

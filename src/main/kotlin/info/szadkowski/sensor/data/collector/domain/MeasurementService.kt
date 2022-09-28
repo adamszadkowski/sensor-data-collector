@@ -1,5 +1,6 @@
 package info.szadkowski.sensor.data.collector.domain
 
+import info.szadkowski.sensor.data.collector.domain.model.AirPressureMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.AirQualityMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.Tags
 import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
@@ -19,6 +20,14 @@ class MeasurementService(
     }
 
     fun write(apiKey: String, measurement: AirQualityMeasurement, timestamp: Instant) {
+        measurementRepository.write(
+            measurement = measurement,
+            tags = loadTags(apiKey),
+            timestamp = timestamp
+        )
+    }
+
+    fun write(apiKey: String, measurement: AirPressureMeasurement, timestamp: Instant) {
         measurementRepository.write(
             measurement = measurement,
             tags = loadTags(apiKey),

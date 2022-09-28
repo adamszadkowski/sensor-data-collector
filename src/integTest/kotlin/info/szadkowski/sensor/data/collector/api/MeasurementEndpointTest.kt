@@ -91,6 +91,25 @@ class MeasurementEndpointTest(
             )
         }
 
+        @Test
+        fun `Writes air pressure measurement to InfluxDB`() {
+            postAirPressure(
+                apiKey = "def",
+                body = """{"timestamp": "2022-09-28T16:52:34Z", "airPressure": 100000.0}""",
+            ).andExpect {
+                status { isNoContent() }
+            }
+
+            val results = influxDB.query(Query("""SELECT * FROM airpressure""")).convertResult()
+            expectThat(results).containsExactly(
+                mapOf(
+                    "time" to "2022-09-28T16:52:34Z",
+                    "location" to "location2",
+                    "airPressure" to 100000.0,
+                )
+            )
+        }
+
         @ParameterizedTest
         @CsvSource(
             value = [
@@ -239,6 +258,7 @@ class MeasurementEndpointTest(
 
     private fun postTemperature(apiKey: String, body: String) = postMeasurement("temperature", apiKey, body)
     private fun postAirQuality(apiKey: String, body: String) = postMeasurement("air-quality", apiKey, body)
+    private fun postAirPressure(apiKey: String, body: String) = postMeasurement("air-pressure", apiKey, body)
     private fun postMeasurement(measurement: String, apiKey: String, body: String) =
         mockMvc.post("/measurement/$measurement") {
             accept = mediaType
