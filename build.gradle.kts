@@ -19,13 +19,13 @@ dependencies {
     implementation(platform(kotlin("bom")))
     implementation(platform("org.junit:junit-bom:5.9.1"))
     implementation(platform("org.springframework.boot:spring-boot-dependencies:2.7.4"))
+    implementation(platform("org.testcontainers:testcontainers-bom:1.17.3"))
     val retrofitVersion = "2.9.0"
     api("com.squareup.retrofit2:retrofit:$retrofitVersion")
     api("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
     api("com.github.tomakehurst:wiremock-jre8-standalone:2.34.0")
     api("io.strikt:strikt-core:0.34.1")
     api("org.influxdb:influxdb-java:2.2")
-    api("org.testcontainers:influxdb:1.15.3")
 }
 
 dependencies {
