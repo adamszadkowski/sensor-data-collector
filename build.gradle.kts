@@ -23,8 +23,8 @@ dependencies {
     api("com.squareup.retrofit2:retrofit:$retrofitVersion")
     api("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
     api("com.github.tomakehurst:wiremock-jre8-standalone:2.34.0")
-    api("io.strikt:strikt-core:0.31.0")
-    api("org.influxdb:influxdb-java:2.21")
+    api("io.strikt:strikt-core:0.34.1")
+    api("org.influxdb:influxdb-java:2.2")
     api("org.testcontainers:influxdb:1.15.3")
 }
 
