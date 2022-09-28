@@ -22,7 +22,7 @@ dependencies {
     val retrofitVersion = "2.9.0"
     api("com.squareup.retrofit2:retrofit:$retrofitVersion")
     api("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
-    api("com.github.tomakehurst:wiremock:2.27.2")
+    api("com.github.tomakehurst:wiremock-jre8-standalone:2.34.0")
     api("io.strikt:strikt-core:0.31.0")
     api("org.influxdb:influxdb-java:2.21")
     api("org.testcontainers:influxdb:1.15.3")
@@ -46,7 +46,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.influxdb:influxdb-java")
     testImplementation("org.testcontainers:influxdb")
-    testImplementation("com.github.tomakehurst:wiremock")
+    testImplementation("com.github.tomakehurst:wiremock-jre8-standalone")
     testImplementation("io.strikt:strikt-core")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
