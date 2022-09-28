@@ -27,3 +27,17 @@ Sensor-Type: a-1
     "pm25": 2.5,
     "pm10": 7.6
 }
+
+### Create air pressure measurement
+
+POST http://localhost/measurement/air-pressure
+Accept: application/vnd.sensor.collector.v1+json
+Content-Type: application/vnd.sensor.collector.v1+json
+X-API-KEY: abc
+Sensor-Version: 0.1
+Sensor-Type: a-1
+
+{
+    "timestamp": "2020-12-19T18:40:33.213+01:00",
+    "airPressure": 100000.0
+}

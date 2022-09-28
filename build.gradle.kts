@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    val kotlinVersion = "1.5.20"
+    val kotlinVersion = "1.7.10"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
 
-    id("org.springframework.boot") version "2.5.2"
+    id("org.springframework.boot") version "2.7.4"
 
     id("nebula.integtest") version "8.0.0"
 }
@@ -17,15 +17,15 @@ repositories {
 
 dependencies {
     implementation(platform(kotlin("bom")))
-    implementation(platform("org.junit:junit-bom:5.7.2"))
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.5.2"))
+    implementation(platform("org.junit:junit-bom:5.9.1"))
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.7.4"))
+    implementation(platform("org.testcontainers:testcontainers-bom:1.17.3"))
     val retrofitVersion = "2.9.0"
     api("com.squareup.retrofit2:retrofit:$retrofitVersion")
     api("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
-    api("com.github.tomakehurst:wiremock:2.27.2")
-    api("io.strikt:strikt-core:0.31.0")
-    api("org.influxdb:influxdb-java:2.21")
-    api("org.testcontainers:influxdb:1.15.3")
+    api("com.github.tomakehurst:wiremock-jre8-standalone:2.34.0")
+    api("io.strikt:strikt-core:0.34.1")
+    api("org.influxdb:influxdb-java:2.23")
 }
 
 dependencies {
@@ -46,7 +46,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.influxdb:influxdb-java")
     testImplementation("org.testcontainers:influxdb")
-    testImplementation("com.github.tomakehurst:wiremock")
+    testImplementation("com.github.tomakehurst:wiremock-jre8-standalone")
     testImplementation("io.strikt:strikt-core")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -59,10 +59,15 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "15"
+            jvmTarget = "17"
         }
     }
     withType<Test> {
         useJUnitPlatform()
+    }
+
+    wrapper {
+        version = "7.5.1"
+        distributionType = Wrapper.DistributionType.BIN
     }
 }

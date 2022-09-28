@@ -14,6 +14,7 @@ data class InfluxdbProperties(
 ) {
     data class Measurements(
         val temperature: String,
-        val airQuality: String
+        val airQuality: String,
+        val airPressure: String,
     )
 }

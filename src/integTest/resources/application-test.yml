@@ -8,6 +8,7 @@ influxdb:
   measurements:
     temperature: temp
     air-quality: aqi
+    air-pressure: airpressure
 
 context:
   initializer:
