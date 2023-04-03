@@ -3,12 +3,12 @@ package info.szadkowski.sensor.data.collector.api
 import info.szadkowski.sensor.data.collector.domain.MissingApiKeyException
 import info.szadkowski.sensor.data.collector.domain.WriteFailedException
 import info.szadkowski.sensor.data.collector.infrastructure.logger
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
-import javax.servlet.http.HttpServletResponse
 
 @ControllerAdvice
 class GlobalExceptionHandler {

@@ -1,11 +1,10 @@
 package info.szadkowski.sensor.data.collector.infrastructure.influxdb
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
+import org.springframework.boot.context.properties.bind.ConstructorBinding
 
-@ConstructorBinding
 @ConfigurationProperties("influxdb")
-data class InfluxdbProperties(
+data class InfluxdbProperties @ConstructorBinding constructor(
     val url: String,
     val database: String,
     val username: String,

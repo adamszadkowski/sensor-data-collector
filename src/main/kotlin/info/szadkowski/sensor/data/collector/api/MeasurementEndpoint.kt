@@ -7,10 +7,10 @@ import info.szadkowski.sensor.data.collector.domain.MeasurementService
 import info.szadkowski.sensor.data.collector.domain.model.AirPressureMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.AirQualityMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
 
 @RestController
 @RequestMapping(

@@ -182,7 +182,7 @@ class MeasurementEndpointTest(
             }.andExpect {
                 status {
                     isBadRequest()
-                    reason("Required request header 'X-API-KEY' for method parameter type String is not present")
+                    reason("Required header 'X-API-KEY' is not present.")
                 }
             }
         }
@@ -196,7 +196,7 @@ class MeasurementEndpointTest(
             }.andExpect {
                 status {
                     isBadRequest()
-                    reason("Required request header 'X-API-KEY' for method parameter type String is not present")
+                    reason("Required header 'X-API-KEY' is not present.")
                 }
             }
         }

@@ -1,8 +1,8 @@
 package info.szadkowski.sensor.data.collector.api.model
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import jakarta.validation.constraints.NotNull
 import java.time.Instant
-import javax.validation.constraints.NotNull
 
 data class TemperatureMeasurementDto @JsonCreator constructor(
     @field:NotNull(message = "missing timestamp")
