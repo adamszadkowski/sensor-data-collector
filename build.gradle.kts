@@ -67,7 +67,7 @@ tasks {
     }
 
     wrapper {
-        version = "7.5.1"
+        version = "8.0.2"
         distributionType = Wrapper.DistributionType.BIN
     }
 }
