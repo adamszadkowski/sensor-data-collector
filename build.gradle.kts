@@ -8,7 +8,7 @@ plugins {
 
     id("org.springframework.boot") version "2.7.4"
 
-    id("nebula.integtest") version "8.0.0"
+    id("nebula.integtest") version "9.6.3"
 }
 
 repositories {
