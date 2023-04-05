@@ -6,7 +6,7 @@ import org.springframework.http.server.observation.ServerRequestObservationConte
 import org.springframework.http.server.observation.ServerRequestObservationConvention
 
 class SensorVersionObservationConvention : ServerRequestObservationConvention {
-    override fun getName(): String = "sensor-versions"
+    override fun getName(): String = "http.server.requests"
 
     override fun getLowCardinalityKeyValues(context: ServerRequestObservationContext): KeyValues =
         KeyValues.of(
