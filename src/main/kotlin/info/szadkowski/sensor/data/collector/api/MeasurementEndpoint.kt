@@ -6,6 +6,7 @@ import info.szadkowski.sensor.data.collector.api.model.TemperatureMeasurementDto
 import info.szadkowski.sensor.data.collector.domain.MeasurementService
 import info.szadkowski.sensor.data.collector.domain.model.AirPressureMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.AirQualityMeasurement
+import info.szadkowski.sensor.data.collector.domain.model.HumidityMeasurement
 import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -29,7 +30,10 @@ class MeasurementEndpoint(
         @RequestHeader("X-API-KEY") apiKey: String,
         @Valid @RequestBody measurement: TemperatureMeasurementDto,
     ) {
-        measurementService.write(apiKey, measurement.toDomain(), measurement.timestamp!!)
+        if (measurement.temperature != null)
+            measurementService.write(apiKey, measurement.toTemperatureDomain(), measurement.timestamp!!)
+        if (measurement.humidity != null)
+            measurementService.write(apiKey, measurement.toHumidityDomain(), measurement.timestamp!!)
     }
 
     @PostMapping(path = ["/air-quality"])
@@ -50,8 +54,11 @@ class MeasurementEndpoint(
         measurementService.write(apiKey, measurement.toDomain(), measurement.timestamp)
     }
 
-    private fun TemperatureMeasurementDto.toDomain() = TemperatureMeasurement(
+    private fun TemperatureMeasurementDto.toTemperatureDomain() = TemperatureMeasurement(
         temperature = temperature!!,
+    )
+
+    private fun TemperatureMeasurementDto.toHumidityDomain() = HumidityMeasurement(
         humidity = humidity!!,
     )
 
