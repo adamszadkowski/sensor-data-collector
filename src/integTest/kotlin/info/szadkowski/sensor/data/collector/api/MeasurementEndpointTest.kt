@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -52,7 +51,7 @@ class MeasurementEndpointTest(
         }
 
         @Test
-        fun `Writes temperature measurement to InfluxDB`() {
+        fun `Writes deprecated temperature measurement to InfluxDB`() {
             postTemperature(
                 apiKey = "abc",
                 body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3, "humidity": 55.3}""",
@@ -66,6 +65,44 @@ class MeasurementEndpointTest(
                     "time" to "2020-12-08T21:24:25Z",
                     "location" to "location1",
                     "temperature" to 21.3,
+                    "humidity" to 55.3,
+                )
+            )
+        }
+
+        @Test
+        fun `Writes temperature measurement to InfluxDB`() {
+            postTemperature(
+                apiKey = "abc",
+                body = """{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3}""",
+            ).andExpect {
+                status { isNoContent() }
+            }
+
+            val results = influxDB.query(Query("""SELECT * FROM temp""")).convertResult()
+            expectThat(results).containsExactly(
+                mapOf(
+                    "time" to "2020-12-08T21:24:25Z",
+                    "location" to "location1",
+                    "temperature" to 21.3,
+                )
+            )
+        }
+
+        @Test
+        fun `Writes deprecated humidity measurement to InfluxDB`() {
+            postTemperature(
+                apiKey = "abc",
+                body = """{"timestamp": "2020-12-08T21:24:25Z", "humidity": 55.3}""",
+            ).andExpect {
+                status { isNoContent() }
+            }
+
+            val results = influxDB.query(Query("""SELECT * FROM temp""")).convertResult()
+            expectThat(results).containsExactly(
+                mapOf(
+                    "time" to "2020-12-08T21:24:25Z",
+                    "location" to "location1",
                     "humidity" to 55.3,
                 )
             )
@@ -108,26 +145,6 @@ class MeasurementEndpointTest(
                     "airPressure" to 100000.0,
                 )
             )
-        }
-
-        @ParameterizedTest
-        @CsvSource(
-            value = [
-                """'{"timestamp": "2020-12-08T21:24:25Z", "temperature": 21.3}', 'missing humidity'""",
-                """'{"timestamp": "2020-12-08T21:24:25Z", "humidity": 55.3}', 'missing temperature'""",
-                """'{"temperature": 21.3, "humidity": 55.3}', 'missing timestamp'""",
-            ]
-        )
-        fun `Fail on missing property in temperature measurement`(body: String, message: String) {
-            postTemperature(
-                apiKey = "def",
-                body = body,
-            ).andExpect {
-                status {
-                    isBadRequest()
-                    reason(message)
-                }
-            }
         }
 
         @ParameterizedTest

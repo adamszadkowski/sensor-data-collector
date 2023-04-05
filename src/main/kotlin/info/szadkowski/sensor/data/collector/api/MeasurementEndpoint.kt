@@ -11,6 +11,7 @@ import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -31,9 +32,9 @@ class MeasurementEndpoint(
         @Valid @RequestBody measurement: TemperatureMeasurementDto,
     ) {
         if (measurement.temperature != null)
-            measurementService.write(apiKey, measurement.toTemperatureDomain(), measurement.timestamp!!)
+            measurementService.write(apiKey, measurement.toTemperatureDomain(), measurement.timestamp)
         if (measurement.humidity != null)
-            measurementService.write(apiKey, measurement.toHumidityDomain(), measurement.timestamp!!)
+            measurementService.write(apiKey, measurement.toHumidityDomain(), measurement.timestamp)
     }
 
     @PostMapping(path = ["/air-quality"])
