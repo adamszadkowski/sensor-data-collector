@@ -16,7 +16,18 @@ open class InfluxdbMeasurementRepository(
 
     @Timed(value = "clients.influxdb.write", extraTags = ["measurement", "temperature"])
     override fun write(measurement: TemperatureMeasurement, tags: Tags, timestamp: Instant) {
-        writeFormatted(properties.measurements.temperature, measurement.format(), tags, timestamp)
+        writeFormatted(
+            properties.measurements.temperature,
+            "temperature=${measurement.temperature}",
+            tags,
+            timestamp
+        )
+        writeFormatted(
+            properties.measurements.temperature,
+            "humidity=${measurement.humidity}",
+            tags,
+            timestamp
+        )
     }
 
     @Timed(value = "clients.influxdb.write", extraTags = ["measurement", "air-quality"])
@@ -41,7 +52,6 @@ open class InfluxdbMeasurementRepository(
         }
     }
 
-    private fun TemperatureMeasurement.format() = "temperature=$temperature,humidity=$humidity"
     private fun AirQualityMeasurement.format() = "pm25=$pm25,pm10=$pm10"
     private fun AirPressureMeasurement.format() = "airPressure=$airPressure"
 }
