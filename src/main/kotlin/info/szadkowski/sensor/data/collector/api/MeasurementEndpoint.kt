@@ -2,6 +2,7 @@ package info.szadkowski.sensor.data.collector.api
 
 import info.szadkowski.sensor.data.collector.api.model.AirPressureMeasurementDto
 import info.szadkowski.sensor.data.collector.api.model.AirQualityMeasurementDto
+import info.szadkowski.sensor.data.collector.api.model.HumidityMeasurementDto
 import info.szadkowski.sensor.data.collector.api.model.TemperatureMeasurementDto
 import info.szadkowski.sensor.data.collector.domain.MeasurementService
 import info.szadkowski.sensor.data.collector.domain.model.AirPressureMeasurement
@@ -11,7 +12,6 @@ import info.szadkowski.sensor.data.collector.domain.model.TemperatureMeasurement
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -35,6 +35,15 @@ class MeasurementEndpoint(
             measurementService.write(apiKey, measurement.toTemperatureDomain(), measurement.timestamp)
         if (measurement.humidity != null)
             measurementService.write(apiKey, measurement.toHumidityDomain(), measurement.timestamp)
+    }
+
+    @PostMapping(path = ["/humidity"])
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun writeHumidityMeasurement(
+        @RequestHeader("X-API-KEY") apiKey: String,
+        @Valid @RequestBody measurement: HumidityMeasurementDto,
+    ) {
+        measurementService.write(apiKey, measurement.toDomain(), measurement.timestamp)
     }
 
     @PostMapping(path = ["/air-quality"])
@@ -61,6 +70,10 @@ class MeasurementEndpoint(
 
     private fun TemperatureMeasurementDto.toHumidityDomain() = HumidityMeasurement(
         humidity = humidity!!,
+    )
+
+    private fun HumidityMeasurementDto.toDomain() = HumidityMeasurement(
+        humidity = humidity,
     )
 
     private fun AirQualityMeasurementDto.toDomain() = AirQualityMeasurement(

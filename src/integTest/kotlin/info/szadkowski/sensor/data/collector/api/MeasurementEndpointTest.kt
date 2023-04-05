@@ -109,6 +109,25 @@ class MeasurementEndpointTest(
         }
 
         @Test
+        fun `Writes humidity measurement to InfluxDB`() {
+            postHumidity(
+                apiKey = "abc",
+                body = """{"timestamp": "2020-12-08T21:24:25Z", "humidity": 55.3}""",
+            ).andExpect {
+                status { isNoContent() }
+            }
+
+            val results = influxDB.query(Query("""SELECT * FROM temp""")).convertResult()
+            expectThat(results).containsExactly(
+                mapOf(
+                    "time" to "2020-12-08T21:24:25Z",
+                    "location" to "location1",
+                    "humidity" to 55.3,
+                )
+            )
+        }
+
+        @Test
         fun `Writes air quality measurement to InfluxDB`() {
             postAirQuality(
                 apiKey = "def",
@@ -273,6 +292,7 @@ class MeasurementEndpointTest(
         }
     }
 
+    private fun postHumidity(apiKey: String, body: String) = postMeasurement("humidity", apiKey, body)
     private fun postTemperature(apiKey: String, body: String) = postMeasurement("temperature", apiKey, body)
     private fun postAirQuality(apiKey: String, body: String) = postMeasurement("air-quality", apiKey, body)
     private fun postAirPressure(apiKey: String, body: String) = postMeasurement("air-pressure", apiKey, body)
